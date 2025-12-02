@@ -99,12 +99,95 @@ cmake --build build --target Spectralz_Standalone
 cd build && ctest --output-on-failure
 ```
 
-## Current Development Phase
-Phase 1: Foundation
+## Platform Support
+
+| Platform | Standalone | VST3 | AU | ARA |
+|----------|------------|------|-----|-----|
+| macOS (Intel + Apple Silicon) | ✅ | ✅ | ✅ | ✅ |
+| Windows (x64) | ✅ | ✅ | ❌ | ✅ |
+| Linux (x64) | ✅ | ✅ | ❌ | ✅ |
+
+## ML Engine Support
+
+Users can choose their stem separation engine:
+
+| Engine | Stems | Quality | Speed |
+|--------|-------|---------|-------|
+| Demucs htdemucs_6s | 6 (vocals, drums, bass, guitar, piano, other) | Best | Slower |
+| Demucs htdemucs_ft | 4 (vocals, drums, bass, other) | Very Good | Medium |
+| Spleeter 5stems | 5 (vocals, drums, bass, piano, other) | Good | Fast |
+| Spleeter 2stems | 2 (vocals, accompaniment) | Good | Fastest |
+| Custom ONNX | Variable | Variable | Variable |
+
+All engines converted to ONNX format for unified inference pipeline.
+
+### Engine Architecture
+```cpp
+class StemSeparator {
+public:
+    virtual ~StemSeparator() = default;
+    virtual std::vector<std::string> getAvailableStems() = 0;
+    virtual void separate(const AudioBuffer& input,
+                         std::map<std::string, AudioBuffer>& outputs) = 0;
+};
+```
+
+## Development Phases
+
+### Phase 1: Foundation (Standalone)
 - [x] Project structure
-- [ ] Basic audio I/O
-- [ ] Spectrogram display
-- [ ] FFT processing
+- [ ] Audio file I/O (WAV, AIFF, MP3, FLAC)
+- [ ] Audio playback engine
+- [ ] FFT/STFT processor
+- [ ] Spectrogram display (OpenGL)
+- [ ] Waveform overview
+- [ ] Basic transport controls
+
+### Phase 2: Spectral Editing (Standalone)
+- [ ] Selection tools (time/frequency)
+- [ ] Brush tools (attenuate/boost)
+- [ ] Eraser tool
+- [ ] Copy/paste spectral data
+- [ ] Undo/redo system
+- [ ] Layer system
+- [ ] Phase vocoder
+
+### Phase 3: ML Stem Separation (Standalone)
+- [ ] ONNX Runtime integration
+- [ ] Demucs model export to ONNX
+- [ ] Spleeter model export to ONNX
+- [ ] Engine selection UI
+- [ ] Background processing
+- [ ] Model manager (download/cache)
+
+### Phase 4: Plugin Formats
+- [ ] VST3 plugin build
+- [ ] AU plugin build
+- [ ] Parameter automation
+- [ ] Preset system
+
+### Phase 5: ARA Integration
+- [ ] ARA 2.0 SDK integration
+- [ ] DAW timeline access
+- [ ] Edit transfer
+
+### Phase 6: Audio Repair Tools
+- [ ] De-noise
+- [ ] De-click
+- [ ] De-clip
+- [ ] De-reverb
+- [ ] Spectral repair
+
+### Phase 7: Advanced Features
+- [ ] Batch processing
+- [ ] Custom model import
+- [ ] Surround support
+
+### Phase 8: Polish & Ship
+- [ ] Performance optimization
+- [ ] UI/UX polish
+- [ ] Installers (DMG/MSI)
+- [ ] Documentation
 
 ## Important Notes
 - JUCE path: `../JUCE` (relative to project root)
