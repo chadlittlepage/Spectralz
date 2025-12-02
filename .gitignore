@@ -1,0 +1,61 @@
+# Build directories
+build/
+cmake-build-*/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+
+# JUCE builds
+Builds/
+JuceLibraryCode/
+
+# Plugin builds
+*.vst3
+*.component
+*.aaxplugin
+
+# Dependencies
+external/
+deps/
+vcpkg_installed/
+
+# Models (large files)
+resources/models/*.onnx
+resources/models/*.pt
+resources/models/*.bin
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Test outputs
+test_output/
+coverage/
+
+# Secrets
+*.plist
+!resources/*.plist
+.env
+secrets/

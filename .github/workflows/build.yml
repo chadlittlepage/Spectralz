@@ -1,0 +1,78 @@
+name: Build
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Dependencies
+        run: |
+          brew install cmake ninja
+
+      - name: Clone JUCE
+        run: |
+          git clone --depth 1 --branch 7.0.9 https://github.com/juce-framework/JUCE.git ../JUCE
+
+      - name: Configure CMake
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spectralz-macOS
+          path: |
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/Standalone/*.app
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/VST3/*.vst3
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/AU/*.component
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Clone JUCE
+        run: |
+          git clone --depth 1 --branch 7.0.9 https://github.com/juce-framework/JUCE.git ../JUCE
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build
+        run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Spectralz-Windows
+          path: |
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/Standalone/*.exe
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/VST3/*.vst3
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format-15
+
+      - name: Check formatting
+        run: |
+          find src -name '*.cpp' -o -name '*.h' | xargs clang-format-15 --dry-run --Werror

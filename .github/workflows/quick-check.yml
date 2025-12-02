@@ -1,0 +1,31 @@
+name: Quick Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check clang-format
+        uses: jidiber/clang-format-action@v4.13.0
+        with:
+          clang-format-version: '15'
+          check-path: 'src'
+
+  build-check:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone JUCE
+        run: git clone --depth 1 --branch 7.0.9 https://github.com/juce-framework/JUCE.git ../JUCE
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build (Debug)
+        run: cmake --build build --config Debug -- -j$(sysctl -n hw.ncpu)
