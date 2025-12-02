@@ -160,6 +160,23 @@ public:
 - [ ] Background processing
 - [ ] Model manager (download/cache)
 
+### Phase 3.5: Audio-to-MIDI Conversion (Standalone)
+- [ ] Pitch detection (YIN, pYIN, or CREPE-based)
+- [ ] Onset detection for note timing
+- [ ] Velocity estimation from amplitude
+- [ ] Drum transcription (kick, snare, hi-hat, etc.)
+- [ ] Polyphonic pitch detection for piano/guitar
+- [ ] MIDI file export (.mid)
+- [ ] Per-stem MIDI generation:
+  - Vocals → Melody MIDI
+  - Bass → Bass MIDI (monophonic)
+  - Drums → Drum Map MIDI (GM standard)
+  - Guitar → Guitar MIDI (polyphonic)
+  - Piano → Piano MIDI (polyphonic)
+  - Other → Best-effort MIDI
+- [ ] Quantization options (1/4, 1/8, 1/16, triplets)
+- [ ] Key/scale detection for note correction
+
 ### Phase 4: Plugin Formats
 - [ ] VST3 plugin build
 - [ ] AU plugin build
