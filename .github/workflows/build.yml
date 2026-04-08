@@ -42,6 +42,8 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
+    env:
+      ONNXRUNTIME_VERSION: "1.16.3"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,11 +53,24 @@ jobs:
         run: |
           git clone --depth 1 --branch 7.0.9 https://github.com/juce-framework/JUCE.git ../JUCE
 
+      - name: Download ONNX Runtime
+        shell: powershell
+        run: |
+          $url = "https://github.com/microsoft/onnxruntime/releases/download/v${{ env.ONNXRUNTIME_VERSION }}/onnxruntime-win-x64-${{ env.ONNXRUNTIME_VERSION }}.zip"
+          Invoke-WebRequest -Uri $url -OutFile onnxruntime.zip
+          Expand-Archive -Path onnxruntime.zip -DestinationPath .
+          Rename-Item -Path "onnxruntime-win-x64-${{ env.ONNXRUNTIME_VERSION }}" -NewName "onnxruntime"
+
       - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DONNXRUNTIME_ROOT="${{ github.workspace }}/onnxruntime"
 
       - name: Build
         run: cmake --build build --config ${{env.BUILD_TYPE}}
+
+      - name: Copy ONNX Runtime DLL to output
+        shell: powershell
+        run: |
+          Copy-Item "onnxruntime/lib/onnxruntime.dll" -Destination "build/Spectralz_artefacts/${{ env.BUILD_TYPE }}/Standalone/"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -63,6 +78,7 @@ jobs:
           name: Spectralz-Windows
           path: |
             build/Spectralz_artefacts/${{env.BUILD_TYPE}}/Standalone/*.exe
+            build/Spectralz_artefacts/${{env.BUILD_TYPE}}/Standalone/onnxruntime.dll
             build/Spectralz_artefacts/${{env.BUILD_TYPE}}/VST3/*.vst3
 
   lint:
