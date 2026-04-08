@@ -37,10 +37,34 @@ external/
 deps/
 vcpkg_installed/
 
-# Models (large files)
-resources/models/*.onnx
-resources/models/*.pt
-resources/models/*.bin
+# Models (large files — fetched by scripts/download_models.sh, see README)
+resources/models/
+pretrained_models/
+*.onnx
+*.onnx.data
+*.pt
+*.bin
+*.pb
+*.tflite
+*.h5
+*.ckpt
+*.tar.gz
+
+# Python environments (esp. inside scripts/spleeter_conversion/)
+**/venv/
+**/.venv/
+**/env/
+__pycache__/
+*.pyc
+*.pyo
+
+# Downloaded model artifacts in conversion scripts
+scripts/spleeter_conversion/sherpa_convert/venv/
+scripts/spleeter_conversion/sherpa_convert/spleeter_models/
+scripts/spleeter_conversion/sherpa_convert/output/
+
+# Node (in case any subdir uses it later)
+node_modules/
 
 # OS files
 .DS_Store
